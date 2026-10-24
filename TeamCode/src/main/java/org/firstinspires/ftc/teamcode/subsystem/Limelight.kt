@@ -27,10 +27,9 @@ class Limelight(val limelight: Limelight3A) : Subsystem() {
         for (result in results) {
             for (hive in Hive.entries) {
                 if (hive.aprilTagIds.contains(result.fiducialId)) {
-                    hive.alliance.orientation = if (isUpsideDown(result)) {
-                        !hive.orientation
-                    } else {
-                        hive.orientation
+                    hive.alliance.orientation = when {
+                        isUpsideDown(result) -> !hive.orientation
+                        else -> hive.orientation
                     }
                 }
             }

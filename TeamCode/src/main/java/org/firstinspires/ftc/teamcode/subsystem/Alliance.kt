@@ -65,20 +65,18 @@ enum class Hive(
         aprilTagIds = intArrayOf(38, 39, 40, 41)
     );
     companion object {
-        fun from(alliance: Alliance, hiveOrientation: HiveOrientation): Hive {
-            return when (alliance) {
-                Alliance.RED -> {
-                    when (hiveOrientation) {
-                        HiveOrientation.AUDIENCE -> RED_AUDIENCE
-                        HiveOrientation.OPPOSITE -> RED_OPPOSITE
-                    }
+        fun from(alliance: Alliance, orientation: HiveOrientation): Hive = when (alliance) {
+            Alliance.RED -> {
+                when (orientation) {
+                    HiveOrientation.AUDIENCE -> RED_AUDIENCE
+                    HiveOrientation.OPPOSITE -> RED_OPPOSITE
                 }
-                Alliance.BLUE ->
-                    when (hiveOrientation) {
-                        HiveOrientation.AUDIENCE -> BLUE_AUDIENCE
-                        HiveOrientation.OPPOSITE -> BLUE_OPPOSITE
-                    }
             }
+            Alliance.BLUE ->
+                when (orientation) {
+                    HiveOrientation.AUDIENCE -> BLUE_AUDIENCE
+                    HiveOrientation.OPPOSITE -> BLUE_OPPOSITE
+                }
         }
     }
 }

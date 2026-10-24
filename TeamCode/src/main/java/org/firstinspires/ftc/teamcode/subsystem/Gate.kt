@@ -8,7 +8,11 @@ class Gate(
 ) : Subsystem() {
     enum class Mode(val servoPosition: Double) {
         OPEN(0.0),
-        CLOSED(1.0)
+        CLOSED(1.0);
+        operator fun not() = when (this) {
+            OPEN -> CLOSED
+            CLOSED -> OPEN
+        }
     }
     var mode: Mode = Mode.CLOSED
         set(value) {
