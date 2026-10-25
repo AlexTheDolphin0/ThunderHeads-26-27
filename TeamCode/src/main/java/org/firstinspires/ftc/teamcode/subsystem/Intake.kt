@@ -13,10 +13,6 @@ class Intake(
         OFF(0.0),
         REVERSE(-1.0)
     }
-    init {
-        intakeMotorLeft.direction = DcMotorSimple.Direction.FORWARD
-        intakeMotorRight.direction = DcMotorSimple.Direction.REVERSE
-    }
     var motorPower: Double = 0.0
         set(value) {
             field = value
