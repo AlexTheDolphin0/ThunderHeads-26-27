@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.teamcode.subsystem.Alliance
 import org.firstinspires.ftc.teamcode.subsystem.Hive
 import org.firstinspires.ftc.teamcode.subsystem.Subsystem
 
@@ -27,7 +28,7 @@ class Limelight(val limelight: Limelight3A) : Subsystem() {
         for (result in results) {
             for (hive in Hive.entries) {
                 if (hive.aprilTagIds.contains(result.fiducialId)) {
-                    hive.alliance.orientation = when {
+                    Alliance.alliance.orientation = when {
                         isUpsideDown(result) -> !hive.orientation
                         else -> hive.orientation
                     }
