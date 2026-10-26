@@ -31,7 +31,12 @@ class Brakes(
             field = mode
             servoLeft.position = mode.leftPosition
             servoRight.position = mode.rightPosition
+            if (mode == Mode.ON) follower.mode()
         }
+
+    fun tick() {
+        if (mode == Mode.ON) follower.stop()
+    }
 
     fun off() {
         mode = Mode.OFF

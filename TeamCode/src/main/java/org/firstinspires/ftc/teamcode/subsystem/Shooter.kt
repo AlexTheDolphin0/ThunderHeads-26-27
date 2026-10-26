@@ -4,6 +4,8 @@ import com.pedropathing.follower.Follower
 import com.pedropathing.math.Vector2D
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.teamcode.subsystem.turret.CRTurret
+import org.firstinspires.ftc.teamcode.subsystem.turret.Turret
 import kotlin.math.abs
 
 class Shooter(
@@ -75,6 +77,7 @@ class Shooter(
             }
             else -> {}
         }
+        if (turret is CRTurret) turret.tick()
     }
 
     private fun target() {

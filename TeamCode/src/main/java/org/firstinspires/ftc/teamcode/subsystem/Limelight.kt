@@ -13,6 +13,14 @@ class Limelight(val limelight: Limelight3A) : Subsystem() {
         const val PIPELINE_ID: Int = 0
         const val POLL_RATE: Int = 20
 
+        private fun getHive(result: FiducialResult): Hive? {
+            for (hive in Hive.entries) {
+                if (hive.aprilTagIds.contains(result.fiducialId)) {
+                    return hive
+                }
+            }
+            return null
+        }
         private fun isUpsideDown(result: FiducialResult): Boolean {
             return result.targetPoseCameraSpace.orientation.getRoll(AngleUnit.DEGREES) > 180
         }
@@ -26,13 +34,10 @@ class Limelight(val limelight: Limelight3A) : Subsystem() {
     fun updateHiveOrientations() {
         val results = limelight.latestResult.fiducialResults
         for (result in results) {
-            for (hive in Hive.entries) {
-                if (hive.aprilTagIds.contains(result.fiducialId)) {
-                    Alliance.alliance.orientation = when {
-                        isUpsideDown(result) -> !hive.orientation
-                        else -> hive.orientation
-                    }
-                }
+            val hive = getHive(result)
+            hive?.alliance?.orientation = when (isUpsideDown(result)) {
+                true -> !hive.orientation
+                false -> hive.orientation
             }
         }
     }
