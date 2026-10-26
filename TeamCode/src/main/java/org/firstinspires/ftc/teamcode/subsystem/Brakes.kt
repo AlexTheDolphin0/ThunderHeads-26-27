@@ -33,6 +33,10 @@ class Brakes(
             servoRight.position = mode.rightPosition
             if (mode == Mode.ON) follower.mode()
         }
+    
+    init {
+        off()
+    }
 
     fun tick() {
         if (mode == Mode.ON) follower.stop()

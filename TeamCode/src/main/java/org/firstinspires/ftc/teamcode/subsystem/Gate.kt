@@ -15,9 +15,9 @@ class Gate(
         }
     }
     var mode: Mode = Mode.CLOSED
-        set(value) {
-            field = value
-            servo.position = value.servoPosition
+        set(mode) {
+            field = mode
+            servo.position = mode.servoPosition
         }
     init {
         close()

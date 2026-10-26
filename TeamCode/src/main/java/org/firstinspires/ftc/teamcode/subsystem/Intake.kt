@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Intake(
@@ -13,16 +12,16 @@ class Intake(
         OFF(0.0),
         REVERSE(-1.0)
     }
-    var motorPower: Double = 0.0
-        set(value) {
-            field = value
-            intakeMotorLeft.power = value
-            intakeMotorRight.power = value
+    var power: Double = 0.0
+        set(power) {
+            field = power
+            intakeMotorLeft.power = power
+            intakeMotorRight.power = power
         }
     var mode: Mode = Mode.OFF
         set(value) {
             field = value
-            motorPower = value.power
+            power = value.power
         }
 
     fun on() {

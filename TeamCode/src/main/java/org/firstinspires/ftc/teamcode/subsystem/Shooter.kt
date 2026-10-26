@@ -35,10 +35,10 @@ class Shooter(
         const val MAXIMUM_ATTACK_ANGLE: Double = 60.0
     }
     var mode: Mode = Mode.FULL_AUTO
-        set(value) {
-            field = value
+        set(mode) {
+            field = mode
             gate.close()
-            when (value) {
+            when (mode) {
                 Mode.FULL_AUTO -> {}
                 Mode.AUTO_TARGET -> {}
                 Mode.MANUAL -> {}

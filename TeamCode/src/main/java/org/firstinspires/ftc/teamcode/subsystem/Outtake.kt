@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
-import com.pedropathing.math.Vector2D
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -11,10 +10,10 @@ class Outtake(
     val motorRight: DcMotorEx
 ) : Subsystem() {
     var velocity: Double = 0.0
-        set(value) {
-            field = value
-            motorLeft.velocity = value
-            motorRight.velocity = value
+        set(velocity) {
+            field = velocity
+            motorLeft.velocity = velocity
+            motorRight.velocity = velocity
         }
     init {
         motorLeft.mode = DcMotor.RunMode.RUN_USING_ENCODER

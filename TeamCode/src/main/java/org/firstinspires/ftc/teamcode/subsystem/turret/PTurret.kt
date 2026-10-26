@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystem.turret
 
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.subsystem.Subsystem
 import kotlin.math.abs
 
 class PTurret(
@@ -15,10 +13,11 @@ class PTurret(
         const val ZERO_POSITION: Double = 0.5
         const val POSITION_TO_ANGLE_RATIO: Double = 1 / 360.0
     }
-    override var angle: Double = 0.0
-        set(value) {
-            field = AngleUnit.normalizeDegrees(value)
-            val position = value * POSITION_TO_ANGLE_RATIO + ZERO_POSITION
+    override var angle: Double
+        get() = super.angle
+        set(angle) {
+            super.angle = angle
+            val position = angle * POSITION_TO_ANGLE_RATIO + ZERO_POSITION
             servoLeft.position = position
             servoMid.position = position
             servoRight.position = position
@@ -27,6 +26,7 @@ class PTurret(
         get() = abs(servoLeft.position - angle) < ANGLE_TOLERANCE
                 && abs(servoMid.position - angle) < ANGLE_TOLERANCE
                 && abs(servoRight.position - angle) < ANGLE_TOLERANCE
+
     override fun printState(telemetry: Telemetry) {
         TODO("Not yet implemented")
     }
