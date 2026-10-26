@@ -17,7 +17,7 @@ class PTurret(
         get() = super.angle
         set(angle) {
             super.angle = angle
-            val position = angle * POSITION_TO_ANGLE_RATIO + ZERO_POSITION
+            val position = super.angle * POSITION_TO_ANGLE_RATIO + ZERO_POSITION
             servoLeft.position = position
             servoMid.position = position
             servoRight.position = position

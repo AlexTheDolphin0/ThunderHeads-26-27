@@ -18,7 +18,6 @@ class CRTurret(
         const val ENCODER_TO_ANGLE_RATIO: Double = 1 / 360.0
     }
     val pidController: PIDController = PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d)
-    override var angle: Double = 0.0
     var power = 0.0
         set(power) {
             field = power

@@ -12,7 +12,7 @@ enum class Alliance {
     companion object {
         var alliance: Alliance = RED
         val targetHive: Hive
-            get() = Hive.from(alliance, alliance.orientation)
+            get() = Hive[alliance, alliance.orientation]
     }
     abstract var orientation: HiveOrientation
     operator fun not(): Alliance = when (this) {
@@ -65,7 +65,7 @@ enum class Hive(
         aprilTagIds = intArrayOf(38, 39, 40, 41)
     );
     companion object {
-        fun from(alliance: Alliance, orientation: HiveOrientation): Hive = when (alliance) {
+        operator fun get(alliance: Alliance, orientation: HiveOrientation): Hive = when (alliance) {
             Alliance.RED -> {
                 when (orientation) {
                     HiveOrientation.AUDIENCE -> RED_AUDIENCE
@@ -77,6 +77,12 @@ enum class Hive(
                     HiveOrientation.AUDIENCE -> BLUE_AUDIENCE
                     HiveOrientation.OPPOSITE -> BLUE_OPPOSITE
                 }
+        }
+        operator fun get(aprilTagId: Int): Hive? {
+            for (hive in Hive.entries) {
+                if (aprilTagId in hive.aprilTagIds) return hive
+            }
+            return null
         }
     }
 }

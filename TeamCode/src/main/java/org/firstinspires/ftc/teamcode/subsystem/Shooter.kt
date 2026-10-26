@@ -66,10 +66,9 @@ class Shooter(
         when (mode) {
             Mode.FULL_AUTO -> {
                 target()
-                if (canReachHive && outtake.isWithinTolerance && turret.isWithinTolerance) {
-                    gate.open()
-                } else {
-                    gate.close()
+                when (canReachHive && outtake.isWithinTolerance && turret.isWithinTolerance) {
+                    true -> gate.open()
+                    false -> gate.close()
                 }
             }
             Mode.AUTO_TARGET -> {
