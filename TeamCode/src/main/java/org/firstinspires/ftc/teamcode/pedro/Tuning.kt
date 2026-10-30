@@ -23,7 +23,7 @@ class Tuning {
         return Tests(Function { hardwareMap: HardwareMap? ->
             Mecanum(
                 hardwareMap,
-                Constants.drivetrainConfig
+                Constants.mecanumConfig
             )
         }, null, null)
     }
@@ -39,13 +39,13 @@ class Tuning {
             { hardwareMap: HardwareMap? ->
                 PinpointLocalizer(
                     hardwareMap,
-                    Constants.localizerConfig
+                    Constants.pinpointConfig
                 )
             },
             { hardwareMap: HardwareMap? ->
                 Mecanum(
                     hardwareMap,
-                    Constants.drivetrainConfig
+                    Constants.mecanumConfig
                 )
             })
     }
