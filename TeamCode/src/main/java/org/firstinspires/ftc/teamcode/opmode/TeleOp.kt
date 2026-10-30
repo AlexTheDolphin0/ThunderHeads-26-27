@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.opmode
 
 import com.bylazar.configurables.annotations.Configurable
 import com.pedropathing.follower.Follower
+import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.Subsystems.Limelight
 import org.firstinspires.ftc.teamcode.pedro.Constants
 import org.firstinspires.ftc.teamcode.subsystem.Brakes
 import org.firstinspires.ftc.teamcode.subsystem.Deflowerer
@@ -56,6 +58,11 @@ class TeleOp : OpMode() {
         Deflowerer(
             servoLeft = hardwareMap["deflowererLeft"] as Servo,
             servoRight = hardwareMap["deflowererRight"] as Servo,
+        )
+    }
+    val limelight: Limelight by lazy {
+        Limelight(
+            limelight3A = hardwareMap["limelight"] as Limelight3A
         )
     }
 
