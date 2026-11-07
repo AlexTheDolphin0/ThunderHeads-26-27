@@ -3,16 +3,18 @@ package org.firstinspires.ftc.teamcode.opmode
 import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.subsystem.TaskManager
+import org.firstinspires.ftc.teamcode.subsystem.Alliance
+import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.CRTurret
+import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.PTurret
 
 @Configurable
 @TeleOp
 class TeleOp : FullOpMode() {
     override fun init() {
+        super.init()
     }
 
     override fun init_loop() {
-        super.init_loop()
     }
 
     override fun start() {
@@ -32,6 +34,5 @@ class TeleOp : FullOpMode() {
         telemetry.fullTelemtry()
     }
     fun Telemetry.fullTelemtry() {
-        taskManager.printState(this)
     }
 }

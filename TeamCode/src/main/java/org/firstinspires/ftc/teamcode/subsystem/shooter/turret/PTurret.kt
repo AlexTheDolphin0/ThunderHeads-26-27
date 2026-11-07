@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystem.turret
+package org.firstinspires.ftc.teamcode.subsystem.shooter.turret
 
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -26,8 +26,4 @@ class PTurret(
         get() = abs(servoLeft.position - angle) < ANGLE_TOLERANCE
                 && abs(servoMid.position - angle) < ANGLE_TOLERANCE
                 && abs(servoRight.position - angle) < ANGLE_TOLERANCE
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
-    }
 }

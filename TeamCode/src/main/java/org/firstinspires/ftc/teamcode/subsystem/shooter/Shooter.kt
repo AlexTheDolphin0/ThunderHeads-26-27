@@ -1,20 +1,20 @@
-package org.firstinspires.ftc.teamcode.subsystem
+package org.firstinspires.ftc.teamcode.subsystem.shooter
 
 import com.pedropathing.follower.Follower
 import com.pedropathing.math.Vector2D
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.subsystem.turret.CRTurret
-import org.firstinspires.ftc.teamcode.subsystem.turret.Turret
+import org.firstinspires.ftc.teamcode.subsystem.Alliance
+import org.firstinspires.ftc.teamcode.subsystem.transfer.Gate
+import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.Turret
 import kotlin.math.abs
 
 class Shooter(
-    val taskManager: TaskManager,
     val follower: Follower,
     val outtake: Outtake,
     val turret: Turret,
     val gate: Gate
-) : Subsystem() {
+) {
     enum class Mode {
         FULL_AUTO,
         AUTO_TARGET,
@@ -34,9 +34,6 @@ class Shooter(
             return Math.toDegrees(angleRadians)
         }
         const val MAXIMUM_ATTACK_ANGLE: Double = 60.0
-    }
-    init {
-        taskManager.loop.action += { tick() }
     }
     var mode: Mode = Mode.FULL_AUTO
         set(mode) {
@@ -86,8 +83,4 @@ class Shooter(
         turret.angle = turretAngleFromVelocityVector(launchVelocityVector)
         outtake.velocity = outtakeVelocityFromVelocityVector(launchVelocityVector)
     }
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
-    }
-
 }

@@ -5,11 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Brakes(
-    taskManager: TaskManager,
     val follower: Follower,
     val servoLeft: Servo,
     val servoRight: Servo
-) : Subsystem() {
+) {
     enum class Mode(
         val leftPosition: Double,
         val rightPosition: Double
@@ -37,10 +36,9 @@ class Brakes(
 
     init {
         off()
-        taskManager.loop.action += { preventDriveOnBrake() }
     }
 
-    fun preventDriveOnBrake() {
+    fun tick() {
         if (mode == Mode.ON) follower.stop()
     }
 
@@ -54,9 +52,5 @@ class Brakes(
 
     fun toggle() {
         mode = !mode
-    }
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.subsystem.turret
+package org.firstinspires.ftc.teamcode.subsystem.shooter.turret
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.teamcode.subsystem.Subsystem
 
-sealed class Turret : Subsystem() {
+sealed class Turret {
     companion object {
         const val ANGLE_TOLERANCE: Double = 1.0
         const val MIN_ANGLE: Double = -120.0

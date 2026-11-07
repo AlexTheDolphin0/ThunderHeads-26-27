@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystem
+package org.firstinspires.ftc.teamcode.subsystem.shooter
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -8,7 +8,7 @@ import kotlin.math.abs
 class Outtake(
     val motorLeft: DcMotorEx,
     val motorRight: DcMotorEx
-) : Subsystem() {
+) {
     var velocity: Double = 0.0
         set(velocity) {
             field = velocity
@@ -28,8 +28,5 @@ class Outtake(
                 && abs(motorRight.velocity - velocity) < VELOCITY_TOLERANCE
     fun off() {
         velocity = 0.0
-    }
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

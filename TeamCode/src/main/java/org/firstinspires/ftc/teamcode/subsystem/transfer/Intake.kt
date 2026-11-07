@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystem
+package org.firstinspires.ftc.teamcode.subsystem.transfer
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 class Intake(
     val intakeMotorLeft: DcMotorEx,
     val intakeMotorRight: DcMotorEx
-) : Subsystem() {
+) {
     enum class Mode(val power: Double) {
         ON(1.0),
         OFF(0.0),
@@ -42,9 +42,5 @@ class Intake(
             Mode.OFF -> Mode.ON
             Mode.REVERSE -> Mode.OFF
         }
-    }
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

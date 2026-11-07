@@ -5,10 +5,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 
-class Limelight(
-    taskManager: TaskManager,
-    val limelight3A: Limelight3A
-) : Subsystem() {
+class Limelight(val limelight3A: Limelight3A) {
     companion object {
         const val PIPELINE_ID: Int = 0
         const val POLL_RATE: Int = 20
@@ -36,11 +33,7 @@ class Limelight(
                 }
             }
         }
-    init {
-        taskManager.loop.init += { updateHiveOrientations() }
-    }
-
-    fun updateHiveOrientations() {
+    fun tick() {
         if (mode == Mode.OFF) return
         val results = limelight3A.latestResult.fiducialResults
         for (result in results) {
@@ -51,9 +44,5 @@ class Limelight(
                 }
             }
         }
-    }
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

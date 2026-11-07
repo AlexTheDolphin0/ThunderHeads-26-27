@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystem
+package org.firstinspires.ftc.teamcode.subsystem.transfer
 
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Gate(
     val servo: Servo
-) : Subsystem() {
+) {
     enum class Mode(val servoPosition: Double) {
         OPEN(0.0),
         CLOSED(1.0);
@@ -28,9 +28,5 @@ class Gate(
 
     fun close() {
         mode = Mode.CLOSED
-    }
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode.subsystem
+package org.firstinspires.ftc.teamcode.subsystem.transfer
 
 import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Deflowerer(
     val servoLeft: Servo,
     val servoRight: Servo
-) : Subsystem() {
+) {
     enum class Mode(val leftPosition: Double, val rightPosition: Double) {
         ON(
             leftPosition = 0.0,
@@ -40,9 +39,5 @@ class Deflowerer(
 
     fun off() {
         mode = Mode.OFF
-    }
-
-    override fun printState(telemetry: Telemetry) {
-        TODO("Not yet implemented")
     }
 }

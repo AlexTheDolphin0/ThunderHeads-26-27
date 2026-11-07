@@ -10,31 +10,26 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.pedro.Constants
 import org.firstinspires.ftc.teamcode.subsystem.Brakes
-import org.firstinspires.ftc.teamcode.subsystem.Deflowerer
-import org.firstinspires.ftc.teamcode.subsystem.Gate
-import org.firstinspires.ftc.teamcode.subsystem.Intake
+import org.firstinspires.ftc.teamcode.subsystem.transfer.Deflowerer
+import org.firstinspires.ftc.teamcode.subsystem.transfer.Gate
+import org.firstinspires.ftc.teamcode.subsystem.transfer.Intake
 import org.firstinspires.ftc.teamcode.subsystem.Limelight
-import org.firstinspires.ftc.teamcode.subsystem.Outtake
-import org.firstinspires.ftc.teamcode.subsystem.Shooter
-import org.firstinspires.ftc.teamcode.subsystem.TaskManager
-import org.firstinspires.ftc.teamcode.subsystem.turret.PTurret
+import org.firstinspires.ftc.teamcode.subsystem.shooter.Outtake
+import org.firstinspires.ftc.teamcode.subsystem.shooter.Shooter
+import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.PTurret
 
 abstract class FullOpMode : OpMode() {
-    val taskManager: TaskManager = TaskManager()
     val follower: Follower by lazy {
         with (Constants) {
             Follower(
                 PinpointLocalizer(hardwareMap, pinpointConfig),
                 Mecanum(hardwareMap, mecanumConfig),
                 Foresight(foresightConfig)
-            ).apply {
-                taskManager.loop.init += { this.update() }
-            }
+            )
         }
     }
     val shooter: Shooter by lazy {
         Shooter(
-            taskManager = taskManager,
             follower = follower,
             outtake = Outtake(
                 motorLeft = hardwareMap["outtakeLeft"] as DcMotorEx,
@@ -58,7 +53,6 @@ abstract class FullOpMode : OpMode() {
     }
     val brakes: Brakes by lazy {
         Brakes(
-            taskManager = taskManager,
             follower = follower,
             servoLeft = hardwareMap["brakesLeft"] as Servo,
             servoRight = hardwareMap["brakesRight"] as Servo,
@@ -72,16 +66,23 @@ abstract class FullOpMode : OpMode() {
     }
     val limelight: Limelight by lazy {
         Limelight(
-            taskManager = taskManager,
             limelight3A = hardwareMap["limelight"] as Limelight3A
         )
     }
 
-    override fun init_loop() {
-        taskManager.initLoop()
+    override fun init() {
+        follower
+        shooter
+        intake
+        brakes
+        deflowerer
+        limelight
     }
 
     override fun loop() {
-        taskManager.loop()
+        follower.update()
+        limelight.tick()
+        shooter.tick()
+        brakes.tick()
     }
 }
