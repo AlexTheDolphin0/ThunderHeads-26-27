@@ -32,7 +32,8 @@ class Testing : OpMode() {
     }
     val deflowerer: Deflowerer by lazy {
         Deflowerer(
-            servo = hardwareMap["deflowerer"] as Servo
+            intakeServo = hardwareMap["intakeServo"] as Servo,
+            plateServo = hardwareMap["plateServo"] as Servo,
         )
     }
 
@@ -50,13 +51,34 @@ class Testing : OpMode() {
         )
         brakes.tick()
 
-        if (gamepad1.aWasPressed()) deflowerer.mode = !deflowerer.mode
+        if (gamepad1.aWasPressed()) deflowerer.mode = when (deflowerer.mode) {
+            Deflowerer.Mode.UP -> Deflowerer.Mode.ROLLER
+            Deflowerer.Mode.DOWN -> Deflowerer.Mode.DOWN
+            Deflowerer.Mode.ROLLER -> Deflowerer.Mode.UP
+        }
         if (gamepad1.bWasPressed()) brakes.mode = !brakes.mode
 
-        if (gamepad1.dpadUpWasPressed()) deflowerer.servo.position += 0.05
-        if (gamepad1.dpadDownWasReleased()) deflowerer.servo.position -= 0.05
-
+        if (gamepad1.a) {
+            if (gamepad1.dpadUpWasPressed()) deflowerer.intakeServo.position += 0.05
+            if (gamepad1.dpadDownWasReleased()) deflowerer.intakeServo.position -= 0.05
+        }
+        if (gamepad1.b) {
+            if (gamepad1.dpadUpWasPressed()) deflowerer.plateServo.position += 0.05
+            if (gamepad1.dpadDownWasReleased()) deflowerer.plateServo.position -= 0.05
+        }
+        if (gamepad1.x) {
+            if (gamepad1.dpadUpWasPressed()) brakes.servoLeft.position += 0.05
+            if (gamepad1.dpadDownWasReleased()) brakes.servoLeft.position -= 0.05
+        }
+        if (gamepad1.y) {
+            if (gamepad1.dpadUpWasPressed()) brakes.servoRight.position += 0.05
+            if (gamepad1.dpadDownWasReleased()) brakes.servoRight.position -= 0.05
+        }
+        telemetry.addLine("A: intake, B: plate, X: brakes left, Y: brakes right")
         telemetry.addData("Pose", follower.pose())
-        telemetry.addData("Deflowerer Position", deflowerer.servo.position)
+        telemetry.addData("Intake Position", deflowerer.intakeServo.position)
+        telemetry.addData("Plate Position", deflowerer.plateServo.position)
+        telemetry.addData("Brakes Left Position", brakes.servoLeft.position)
+        telemetry.addData("Brakes Right Position", brakes.servoRight.position)
     }
 }
