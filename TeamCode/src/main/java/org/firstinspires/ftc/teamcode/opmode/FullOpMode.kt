@@ -60,7 +60,7 @@ abstract class FullOpMode : OpMode() {
     }
     val deflowerer: Deflowerer by lazy {
         Deflowerer(
-            servoLeft = hardwareMap["deflowererLeft"] as Servo,
+            servo = hardwareMap["deflowererLeft"] as Servo,
             servoRight = hardwareMap["deflowererRight"] as Servo,
         )
     }

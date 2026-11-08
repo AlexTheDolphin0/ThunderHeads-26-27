@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.opmode
 import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.subsystem.Alliance
-import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.CRTurret
-import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.PTurret
 
 @Configurable
 @TeleOp
@@ -31,8 +28,8 @@ class TeleOp : FullOpMode() {
             (gamepad1.left_trigger - gamepad1.right_trigger).toDouble(),
             -(gamepad1.left_stick_x).toDouble()
         )
-        telemetry.fullTelemtry()
+        telemetry.fullTelemetry()
     }
-    fun Telemetry.fullTelemtry() {
+    fun Telemetry.fullTelemetry() {
     }
 }

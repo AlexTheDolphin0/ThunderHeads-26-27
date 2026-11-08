@@ -1,20 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystem.transfer
 
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Deflowerer(
-    val servoLeft: Servo,
-    val servoRight: Servo
+    val servo: Servo
 ) {
-    enum class Mode(val leftPosition: Double, val rightPosition: Double) {
+    enum class Mode(val position: Double) {
         ON(
-            leftPosition = 0.0,
-            rightPosition = 1.0,
+            position = 0.0,
         ),
         OFF(
-            leftPosition = 1.0,
-            rightPosition = 0.0,
+            position = 1.0,
         );
         operator fun not() = when (this) {
             ON -> OFF
@@ -29,8 +25,7 @@ class Deflowerer(
     var mode: Mode = Mode.OFF
         set(mode) {
             field = mode
-            servoLeft.position = mode.leftPosition
-            servoRight.position = mode.rightPosition
+            servo.position = mode.position
         }
 
     fun on() {
