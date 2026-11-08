@@ -49,32 +49,37 @@ class Testing : OpMode() {
             (gamepad1.left_trigger - gamepad1.right_trigger).toDouble(),
             -(gamepad1.left_stick_x).toDouble()
         )
+        follower.update()
         brakes.tick()
 
         if (gamepad1.aWasPressed()) deflowerer.mode = when (deflowerer.mode) {
             Deflowerer.Mode.UP -> Deflowerer.Mode.ROLLER
-            Deflowerer.Mode.DOWN -> Deflowerer.Mode.DOWN
-            Deflowerer.Mode.ROLLER -> Deflowerer.Mode.UP
+            Deflowerer.Mode.ROLLER -> Deflowerer.Mode.DOWN
+            Deflowerer.Mode.DOWN -> Deflowerer.Mode.UP
         }
         if (gamepad1.bWasPressed()) brakes.mode = !brakes.mode
 
-        if (gamepad1.a) {
-            if (gamepad1.dpadUpWasPressed()) deflowerer.intakeServo.position += 0.05
-            if (gamepad1.dpadDownWasReleased()) deflowerer.intakeServo.position -= 0.05
+        val selectedServo = when {
+            gamepad1.a -> deflowerer.intakeServo
+            gamepad1.b -> deflowerer.plateServo
+            gamepad1.x -> brakes.servoLeft
+            gamepad1.y -> brakes.servoRight
+            else -> null
         }
-        if (gamepad1.b) {
-            if (gamepad1.dpadUpWasPressed()) deflowerer.plateServo.position += 0.05
-            if (gamepad1.dpadDownWasReleased()) deflowerer.plateServo.position -= 0.05
-        }
-        if (gamepad1.x) {
-            if (gamepad1.dpadUpWasPressed()) brakes.servoLeft.position += 0.05
-            if (gamepad1.dpadDownWasReleased()) brakes.servoLeft.position -= 0.05
-        }
-        if (gamepad1.y) {
-            if (gamepad1.dpadUpWasPressed()) brakes.servoRight.position += 0.05
-            if (gamepad1.dpadDownWasReleased()) brakes.servoRight.position -= 0.05
-        }
+
+        if (gamepad1.dpadRightWasPressed()) selectedServo?.position += 0.1
+        if (gamepad1.dpadLeftWasReleased()) selectedServo?.position -= 0.1
+        if (gamepad1.dpadUpWasPressed()) selectedServo?.position += 0.01
+        if (gamepad1.dpadDownWasReleased()) selectedServo?.position -= 0.01
+
         telemetry.addLine("A: intake, B: plate, X: brakes left, Y: brakes right")
+        telemetry.addData("Selected Servo", when (selectedServo) {
+            deflowerer.intakeServo -> "Intake"
+            deflowerer.plateServo -> "Plate"
+            brakes.servoLeft -> "Brakes Left"
+            brakes.servoRight -> "Brakes Left"
+            else -> "None"
+        })
         telemetry.addData("Pose", follower.pose())
         telemetry.addData("Intake Position", deflowerer.intakeServo.position)
         telemetry.addData("Plate Position", deflowerer.plateServo.position)

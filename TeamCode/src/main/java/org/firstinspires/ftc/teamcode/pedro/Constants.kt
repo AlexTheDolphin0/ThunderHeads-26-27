@@ -13,10 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 object Constants {
     val mecanumConfig: MecanumConfig = MecanumConfig { config: MecanumConfig ->
         config.apply {
-            frontLeftName.set("left_front")
-            backLeftName.set("left_back")
-            frontRightName.set("right_front")
-            backRightName.set("right_back")
+            frontLeftName.set("leftFront")
+            backLeftName.set("leftBack")
+            frontRightName.set("rightFront")
+            backRightName.set("rightBack")
 
             frontLeftDirection.set(DcMotorSimple.Direction.REVERSE)
             backLeftDirection.set(DcMotorSimple.Direction.REVERSE)
@@ -28,6 +28,7 @@ object Constants {
     }
     val pinpointConfig: PinpointConfig = PinpointConfig { config: PinpointConfig ->
         config.apply {
+            name.set("pinpoint")
             podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD)
             xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD)

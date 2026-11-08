@@ -11,13 +11,13 @@ class Deflowerer(
             intakePosition = 0.0,
             platePosition = 0.0,
         ),
-        DOWN(
-            intakePosition = 1.0,
-            platePosition = 1.0,
-        ),
         ROLLER(
             intakePosition = 1.0,
             platePosition = 0.0,
+        ),
+        DOWN(
+            intakePosition = 1.0,
+            platePosition = 1.0,
         );
     }
 
