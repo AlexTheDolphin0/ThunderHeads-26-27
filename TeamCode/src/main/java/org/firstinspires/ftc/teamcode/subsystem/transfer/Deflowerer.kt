@@ -3,36 +3,44 @@ package org.firstinspires.ftc.teamcode.subsystem.transfer
 import com.qualcomm.robotcore.hardware.Servo
 
 class Deflowerer(
-    val servo: Servo
+    val intakeServo: Servo,
+    val plateServo: Servo
 ) {
-    enum class Mode(val position: Double) {
-        ON(
-            position = 0.0,
+    enum class Mode(val intakePosition: Double, val platePosition: Double) {
+        UP(
+            intakePosition = 0.0,
+            platePosition = 0.0,
         ),
-        OFF(
-            position = 1.0,
+        DOWN(
+            intakePosition = 1.0,
+            platePosition = 1.0,
+        ),
+        ROLLER(
+            intakePosition = 1.0,
+            platePosition = 0.0,
         );
-        operator fun not() = when (this) {
-            ON -> OFF
-            OFF -> ON
-        }
     }
 
     init {
-        off()
+        up()
     }
 
-    var mode: Mode = Mode.OFF
+    var mode: Mode = Mode.UP
         set(mode) {
             field = mode
-            servo.position = mode.position
+            intakeServo.position = mode.intakePosition;
+            plateServo.position = mode.platePosition
         }
 
-    fun on() {
-        mode = Mode.ON
+    fun up() {
+        mode = Mode.UP
     }
 
-    fun off() {
-        mode = Mode.OFF
+    fun down() {
+        mode = Mode.DOWN
+    }
+
+    fun roller() {
+        mode = Mode.ROLLER
     }
 }
