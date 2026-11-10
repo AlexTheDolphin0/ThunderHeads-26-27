@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode
 
 import com.pedropathing.algorithm.Foresight
 import com.pedropathing.follower.Follower
+import com.pedropathing.math.Pose
 import com.pedropathing.revhub.drivetrains.Mecanum
 import com.pedropathing.revhub.localizers.PinpointLocalizer
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -24,7 +25,7 @@ class Drive : OpMode() {
     }
 
     override fun init() {
-        follower
+        follower.setPose(Pose(0.0, 0.0, 0.0))
     }
 
     override fun loop() {
@@ -34,6 +35,8 @@ class Drive : OpMode() {
             -(gamepad1.left_stick_x).toDouble()
         )
         follower.update()
-        telemetry.addData("Pose", follower.pose())
+        telemetry.addData("X", follower.pose().x().toString() + " Inches")
+        telemetry.addData("Y", follower.pose().y().toString() + " Inches")
+        telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()).toString() + " Degrees")
     }
 }

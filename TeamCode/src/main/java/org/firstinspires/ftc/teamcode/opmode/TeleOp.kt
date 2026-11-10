@@ -28,8 +28,8 @@ class TeleOp : FullOpMode() {
             (gamepad1.left_trigger - gamepad1.right_trigger).toDouble(),
             -(gamepad1.left_stick_x).toDouble()
         )
-        telemetry.fullTelemetry()
+        addTelemetry()
     }
-    fun Telemetry.fullTelemetry() {
+    fun addTelemetry() {
     }
 }

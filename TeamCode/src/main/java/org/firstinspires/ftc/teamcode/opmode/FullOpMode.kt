@@ -51,13 +51,6 @@ abstract class FullOpMode : OpMode() {
             intakeMotorRight = hardwareMap["intakeRight"] as DcMotorEx
         )
     }
-    val brakes: Brakes by lazy {
-        Brakes(
-            follower = follower,
-            servoLeft = hardwareMap["brakesLeft"] as Servo,
-            servoRight = hardwareMap["brakesRight"] as Servo,
-        )
-    }
     val deflowerer: Deflowerer by lazy {
         Deflowerer(
             intakeServo = hardwareMap["intakeServo"] as Servo,
@@ -74,7 +67,6 @@ abstract class FullOpMode : OpMode() {
         follower
         shooter
         intake
-        brakes
         deflowerer
         limelight
     }
@@ -83,6 +75,5 @@ abstract class FullOpMode : OpMode() {
         follower.update()
         limelight.tick()
         shooter.tick()
-        brakes.tick()
     }
 }

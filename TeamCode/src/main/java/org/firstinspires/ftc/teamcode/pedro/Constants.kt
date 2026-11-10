@@ -8,6 +8,7 @@ import com.pedropathing.revhub.drivetrains.MecanumConfig
 import com.pedropathing.revhub.localizers.PinpointConfig
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 
 object Constants {
@@ -29,47 +30,38 @@ object Constants {
     val pinpointConfig: PinpointConfig = PinpointConfig { config: PinpointConfig ->
         config.apply {
             name.set("pinpoint")
-            podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD)
-            xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            xPodOffset.set(0.0)
-            yPodOffset.set(0.0)
+            podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            xPodOffset.set(-6.223646749661664)
+            yPodOffset.set(-2.8399841428741697)
+            xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            globalDistanceUnit.set(DistanceUnit.INCH)
+            offsetUnits.set(DistanceUnit.INCH)
         }
     }
     val foresightConfig: ForesightConfig = ForesightConfig { config: ForesightConfig ->
         config.apply {
-        val primaryTranslationalForward = Controller.proportional(0.3)
-        val secondaryTranslationalForward = Controller.proportional(0.1)
-        val primaryTranslationalLateral = Controller.proportional(0.3)
-        val secondaryTranslationalLateral = Controller.proportional(0.1)
+            val primaryTranslationalForward = Controller.proportional(1.32134409702489)
+            val secondaryTranslationalForward = Controller.proportional(0.4882013368861666)
+            val primaryTranslationalLateral = Controller.proportional(113.62306315862948)
+            val secondaryTranslationalLateral = Controller.proportional(41.98068577295)
 
-        forwardTranslational.set(
-            Controller.piecewise(secondaryTranslationalForward)
-                .put(2.5, primaryTranslationalForward)
-        )
-        strafeTranslational.set(
-            Controller.piecewise(secondaryTranslationalLateral)
-                .put(2.5, primaryTranslationalLateral)
-        )
+            forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward))
+            strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral))
 
-        coast.set(Controller.proportionalFeedforward(0.010978350889324107))
-        brake.set(Controller.proportionalFeedforward(0.008731598255925491))
+            coast.set(Controller.proportionalFeedforward(0.04198067800686552))
+            brake.set(Controller.proportionalFeedforward(0.03568357630583569))
 
-        headingFeedback.set(Controller.proportional(5.258721785960744))
-        headingBrakeCoefficients.set(
-            Vector2D.cartesian(
-                0.05642143125655298,
-                0.0063829525363003695
-            )
-        )
+            headingFeedback.set(Controller.proportional(9.272757305878146))
+            headingBrakeCoefficients.set(Vector2D.cartesian(0.06295800018176542, 0.004697509017601684))
 
-        linearBrakeCoefficients.set(Matrix.diag(0.10605894992901523, 0.08719146175596092))
-        quadraticBrakeCoefficients.set(Matrix.diag(0.0014663966976606565, 0.0013837064502458813))
+            linearBrakeCoefficients.set(Matrix.diag(0.049095096790093946, 0.037015896415005745))
+            quadraticBrakeCoefficients.set(Matrix.diag(0.0022575972307257923, 0.002249260065691901))
 
-        maxAchievableForwardVelocity.set(72.72923108818539)
-        maxAchievableStrafeVelocity.set(52.34323936525474)
-        naturalForwardDeceleration.set(85.01144677379789)
-        naturalStrafeDeceleration.set(104.49787535782846)
+            maxAchievableForwardVelocity.set(50.235653255484536)
+            maxAchievableStrafeVelocity.set(35.14336327973978)
+            naturalForwardDeceleration.set(82.81772577210577)
+            naturalStrafeDeceleration.set(108.03534422255021)
         }
     }
 }

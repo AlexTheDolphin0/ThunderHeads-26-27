@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem.transfer
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Intake(
@@ -8,9 +9,14 @@ class Intake(
     val intakeMotorRight: DcMotorEx
 ) {
     enum class Mode(val power: Double) {
-        ON(1.0),
+        ON(0.5),
         OFF(0.0),
-        REVERSE(-1.0)
+        REVERSE(-0.5)
+    }
+    init {
+        intakeMotorLeft.direction = DcMotorSimple.Direction.FORWARD
+        intakeMotorLeft.direction = DcMotorSimple.Direction.REVERSE
+        this.off()
     }
     var power: Double = 0.0
         set(power) {

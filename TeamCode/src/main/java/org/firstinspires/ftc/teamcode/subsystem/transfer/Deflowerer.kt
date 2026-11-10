@@ -9,16 +9,25 @@ class Deflowerer(
     enum class Mode(val intakePosition: Double, val platePosition: Double) {
         UP(
             intakePosition = 0.0,
-            platePosition = 0.0,
+            platePosition = 0.83,
         ),
         ROLLER(
             intakePosition = 1.0,
-            platePosition = 0.0,
+            platePosition = UP.platePosition,
         ),
         DOWN(
-            intakePosition = 1.0,
+            intakePosition = ROLLER.intakePosition,
             platePosition = 1.0,
+        ),
+        WIGGLE(
+            intakePosition = DOWN.intakePosition,
+            platePosition = DOWN.platePosition
         );
+    }
+
+    companion object {
+        const val WIGGLE_DISTANCE: Double = 0.025
+        const val WIGGLE_PERIOD_MS: Double = 200.0
     }
 
     init {
@@ -42,5 +51,19 @@ class Deflowerer(
 
     fun roller() {
         mode = Mode.ROLLER
+    }
+
+    fun wiggle() {
+        mode = Mode.WIGGLE
+    }
+
+    fun tick(milliseconds: Double) {
+        if (mode == Mode.WIGGLE) {
+            val wiggleUp = milliseconds % WIGGLE_PERIOD_MS < WIGGLE_PERIOD_MS / 2
+            plateServo.position = Mode.WIGGLE.platePosition + when {
+                wiggleUp -> WIGGLE_DISTANCE
+                else -> -WIGGLE_DISTANCE
+            }
+        }
     }
 }
