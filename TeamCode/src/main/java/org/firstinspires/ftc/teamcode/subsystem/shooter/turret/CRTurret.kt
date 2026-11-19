@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystem.shooter.turret
 
+import com.bylazar.configurables.annotations.Configurable
 import com.pedropathing.controllers.PIDController
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDCoefficients
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.abs
 
+@Configurable
 class CRTurret(
     val servoLeft: CRServo,
     val servoMid: CRServo,
@@ -14,10 +15,10 @@ class CRTurret(
     val encoder: DcMotorEx,
     ) : Turret() {
     companion object {
-        val pidCoefficients: PIDCoefficients = PIDCoefficients()
-        const val ENCODER_TO_ANGLE_RATIO: Double = 1 / 360.0
+        @JvmField var PID_COEFFICIENTS: PIDCoefficients = PIDCoefficients()
+        @JvmField var ENCODER_TO_ANGLE_RATIO: Double = 1 / 360.0
     }
-    val pidController: PIDController = PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d)
+    val pidController: PIDController = PIDController(PID_COEFFICIENTS.p, PID_COEFFICIENTS.i, PID_COEFFICIENTS.d)
     var power = 0.0
         set(power) {
             field = power

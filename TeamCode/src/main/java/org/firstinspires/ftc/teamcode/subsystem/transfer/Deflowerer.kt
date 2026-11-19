@@ -1,33 +1,22 @@
 package org.firstinspires.ftc.teamcode.subsystem.transfer
 
+import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.hardware.Servo
 
+@Configurable
 class Deflowerer(
-    val intakeServo: Servo,
-    val plateServo: Servo
+    val servo: Servo
 ) {
-    enum class Mode(val intakePosition: Double, val platePosition: Double) {
-        UP(
-            intakePosition = 0.0,
-            platePosition = 0.83,
-        ),
-        ROLLER(
-            intakePosition = 1.0,
-            platePosition = UP.platePosition,
-        ),
-        DOWN(
-            intakePosition = ROLLER.intakePosition,
-            platePosition = 1.0,
-        ),
-        WIGGLE(
-            intakePosition = DOWN.intakePosition,
-            platePosition = DOWN.platePosition
-        );
+    @Configurable
+    enum class Mode(@JvmField var position: Double) {
+        UP(0.85),
+        DOWN(1.0)
     }
 
     companion object {
-        const val WIGGLE_DISTANCE: Double = 0.025
-        const val WIGGLE_PERIOD_MS: Double = 200.0
+        @JvmField var WIGGLE_DISTANCE: Double = 0.001
+        @JvmField var WIGGLE_PERIOD_MS: Double = 200.0
+        @JvmField var DAMPING_BASE: Double = 20.0
     }
 
     init {
@@ -37,9 +26,11 @@ class Deflowerer(
     var mode: Mode = Mode.UP
         set(mode) {
             field = mode
-            intakeServo.position = mode.intakePosition;
-            plateServo.position = mode.platePosition
+            targetPosition = mode.position
         }
+
+    var targetPosition: Double = mode.position
+    var nonWigglePosition: Double = targetPosition
 
     fun up() {
         mode = Mode.UP
@@ -48,22 +39,22 @@ class Deflowerer(
     fun down() {
         mode = Mode.DOWN
     }
-
-    fun roller() {
-        mode = Mode.ROLLER
-    }
-
-    fun wiggle() {
-        mode = Mode.WIGGLE
-    }
-
     fun tick(milliseconds: Double) {
-        if (mode == Mode.WIGGLE) {
-            val wiggleUp = milliseconds % WIGGLE_PERIOD_MS < WIGGLE_PERIOD_MS / 2
-            plateServo.position = Mode.WIGGLE.platePosition + when {
-                wiggleUp -> WIGGLE_DISTANCE
-                else -> -WIGGLE_DISTANCE
-            }
+        nonWigglePosition = nextDampedPosition(nonWigglePosition, targetPosition)
+        servo.position = nonWigglePosition
+        if (mode == Mode.DOWN) {
+            servo.wiggle(nonWigglePosition, milliseconds)
         }
+
+    }
+    private fun Servo.wiggle(nonWigglePosition: Double, milliseconds: Double) {
+        val wiggleUp = milliseconds % WIGGLE_PERIOD_MS < WIGGLE_PERIOD_MS / 2
+        this.position = nonWigglePosition + when {
+            wiggleUp -> WIGGLE_DISTANCE
+            else -> -WIGGLE_DISTANCE
+        }
+    }
+    private fun nextDampedPosition(position: Double, targetPosition: Double): Double {
+        return position + (targetPosition - position) / DAMPING_BASE //Changes based on run speed because I'm lazy
     }
 }

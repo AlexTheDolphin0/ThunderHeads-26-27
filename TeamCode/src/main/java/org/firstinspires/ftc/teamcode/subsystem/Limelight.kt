@@ -7,8 +7,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 
 class Limelight(val limelight3A: Limelight3A) {
     companion object {
-        const val PIPELINE_ID: Int = 0
-        const val POLL_RATE: Int = 20
+        @JvmField var PIPELINE_ID: Int = 0
+        @JvmField var POLL_RATE: Int = 20
         private fun isUpsideDown(result: FiducialResult): Boolean {
             return result.targetPoseCameraSpace.orientation.getRoll(AngleUnit.DEGREES) > 180
         }

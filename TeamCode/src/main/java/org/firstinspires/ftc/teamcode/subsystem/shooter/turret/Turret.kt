@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystem.shooter.turret
 
+import com.bylazar.configurables.annotations.Configurable
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 
+@Configurable
 sealed class Turret {
     companion object {
-        const val ANGLE_TOLERANCE: Double = 1.0
-        const val MIN_ANGLE: Double = -120.0
-        const val MAX_ANGLE: Double = 120.0
+        @JvmField var ANGLE_TOLERANCE: Double = 1.0
+        @JvmField var MIN_ANGLE: Double = -120.0
+        @JvmField var MAX_ANGLE: Double = 120.0
     }
     open var angle: Double = 0.0
         set(angle) {
@@ -15,8 +17,5 @@ sealed class Turret {
     abstract val isWithinTolerance: Boolean
     fun off() {
         angle = 0.0
-    }
-    init {
-        off()
     }
 }

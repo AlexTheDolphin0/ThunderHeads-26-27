@@ -1,22 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystem.shooter.turret
 
+import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.abs
 
+@Configurable
 class PTurret(
     val servoLeft: Servo,
     val servoMid: Servo,
     val servoRight: Servo,
 ) : Turret() {
     companion object {
-        const val ZERO_POSITION: Double = 0.5
-        const val POSITION_TO_ANGLE_RATIO: Double = 1 / 360.0
+        @JvmField var ZERO_POSITION: Double = 0.5
+        @JvmField var POSITION_TO_ANGLE_RATIO: Double = (1.0 / 500.0) * (80.0 / 40.0) * (44.0 / 71.0)
     }
     override var angle: Double
         get() = super.angle
         set(angle) {
-            super.angle = angle
+            super.angle = AngleUnit.normalizeDegrees(angle)
             val position = super.angle * POSITION_TO_ANGLE_RATIO + ZERO_POSITION
             servoLeft.position = position
             servoMid.position = position

@@ -1,52 +1,46 @@
 package org.firstinspires.ftc.teamcode.subsystem.transfer
 
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.firstinspires.ftc.robotcore.external.Telemetry
+import com.bylazar.configurables.annotations.Configurable
+import com.qualcomm.robotcore.hardware.Servo
 
+@Configurable
 class Intake(
-    val intakeMotorLeft: DcMotorEx,
-    val intakeMotorRight: DcMotorEx
+    val servo: Servo
 ) {
-    enum class Mode(val power: Double) {
-        ON(0.5),
-        OFF(0.0),
-        REVERSE(-0.5)
+    @Configurable
+    companion object {
+        @JvmField var MILLIS_BEFORE_UP = 500.0
     }
-    init {
-        intakeMotorLeft.direction = DcMotorSimple.Direction.FORWARD
-        intakeMotorLeft.direction = DcMotorSimple.Direction.REVERSE
-        this.off()
+    @Configurable
+    object Positions {
+        @JvmField var UP = 0.0
+        @JvmField var DOWN = 0.69
+        @JvmField var FURTHER_DOWN = 1.0
     }
-    var power: Double = 0.0
-        set(power) {
-            field = power
-            intakeMotorLeft.power = power
-            intakeMotorRight.power = power
+    enum class Mode {
+        UP,
+        DOWN
+    }
+    var mode: Mode = Mode.UP
+        set(mode) {
+            field = mode
+            millisSinceModeChange = 0.0
+            servo.position = when (mode) {
+                Mode.UP -> Positions.FURTHER_DOWN
+                Mode.DOWN -> Positions.DOWN
+            }
         }
-    var mode: Mode = Mode.OFF
-        set(value) {
-            field = value
-            power = value.power
-        }
-
-    fun on() {
-        mode = Mode.ON
+    var millisSinceModeChange: Double = 0.0
+    fun tick(deltaTimeMillis: Double) {
+        millisSinceModeChange += deltaTimeMillis
+        if (mode == Mode.UP && millisSinceModeChange > MILLIS_BEFORE_UP)
+            servo.position = Positions.UP
+    }
+    fun up() {
+        mode = Mode.UP
     }
 
-    fun off() {
-        mode = Mode.OFF
-    }
-
-    fun reverse() {
-        mode = Mode.REVERSE
-    }
-
-    fun toggle() {
-        mode = when (mode) {
-            Mode.ON -> Mode.OFF
-            Mode.OFF -> Mode.ON
-            Mode.REVERSE -> Mode.OFF
-        }
+    fun down() {
+        mode = Mode.DOWN
     }
 }

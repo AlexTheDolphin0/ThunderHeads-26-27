@@ -14,17 +14,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 object Constants {
     val mecanumConfig: MecanumConfig = MecanumConfig { config: MecanumConfig ->
         config.apply {
-            frontLeftName.set("leftFront")
-            backLeftName.set("leftBack")
-            frontRightName.set("rightFront")
-            backRightName.set("rightBack")
+            frontLeftName.set("frontLeft")
+            frontRightName.set("frontRight")
+            backLeftName.set("backLeft")
+            backRightName.set("backRight")
 
             frontLeftDirection.set(DcMotorSimple.Direction.REVERSE)
             backLeftDirection.set(DcMotorSimple.Direction.REVERSE)
             frontRightDirection.set(DcMotorSimple.Direction.FORWARD)
             backRightDirection.set(DcMotorSimple.Direction.FORWARD)
 
-            manualBrakeMode.set(false)
+            manualBrakeMode.set(true)
         }
     }
     val pinpointConfig: PinpointConfig = PinpointConfig { config: PinpointConfig ->
