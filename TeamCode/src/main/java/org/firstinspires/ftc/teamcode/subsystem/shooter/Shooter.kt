@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.subsystem.transfer.Gate
 import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.Turret
 import kotlin.math.abs
 
-@Configurable
 class Shooter(
     val follower: Follower,
     val outtake: Outtake,
@@ -35,9 +34,9 @@ class Shooter(
             val angleRadians = velocityVector.theta()
             return Math.toDegrees(angleRadians)
         }
-        @JvmField var MINIMUM_ATTACK_ANGLE: Double = 15.0
-        @JvmField var MAXIMUM_ATTACK_ANGLE: Double = 60.0
-        @JvmField var ANGULAR_VELOCITY_TURRET_ANGLE_ADJUSTMENT_COEFFICIENT: Double = 2 * Math.PI / (0.115 * 6.0)
+        val MINIMUM_ATTACK_ANGLE: Double = 15.0
+        val MAXIMUM_ATTACK_ANGLE: Double = 60.0
+        val ANGULAR_VELOCITY_TURRET_ANGLE_ADJUSTMENT_COEFFICIENT: Double = 2 * Math.PI / (0.115 * 6.0)
     }
     var mode: Mode = Mode.FULL_AUTO
         set(mode) {

@@ -3,19 +3,16 @@ package org.firstinspires.ftc.teamcode.subsystem.transfer
 import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.hardware.Servo
 
-@Configurable
 class Intake(
     val servo: Servo
 ) {
-    @Configurable
     companion object {
-        @JvmField var MILLIS_BEFORE_UP = 250.0
+        val MILLIS_BEFORE_UP = 250.0
     }
-    @Configurable
     object Positions {
-        @JvmField var UP = 0.0
-        @JvmField var DOWN = 1.0
-        @JvmField var FURTHER_DOWN = 1.0
+        val UP = 0.0
+        val DOWN = 1.0
+        val FURTHER_DOWN = 1.0
     }
     enum class Mode {
         UP,

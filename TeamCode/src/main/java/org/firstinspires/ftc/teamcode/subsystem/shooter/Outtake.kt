@@ -9,18 +9,16 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.abs
 
-@Configurable
 class Outtake(
     val motorLeft: DcMotorEx,
     val motorRight: DcMotorEx
 ) {
     companion object {
-        @JvmField var VELOCITY_TOLERANCE: Double = 2.5
+        val VELOCITY_TOLERANCE: Double = 2.5
     }
-    @Configurable
     object PidfCoefficients {
-        @JvmField var LEFT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
-        @JvmField var RIGHT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
+        val LEFT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
+        val RIGHT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
     }
     var velocity: Double = 0.0
         set(velocity) {

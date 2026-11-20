@@ -6,15 +6,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import kotlin.math.abs
 
-@Configurable
 class PTurret(
     val servoLeft: Servo,
     val servoMid: Servo,
     val servoRight: Servo,
 ) : Turret() {
     companion object {
-        @JvmField var ZERO_POSITION: Double = 0.5
-        @JvmField var POSITION_TO_ANGLE_RATIO: Double = (1.0 / 500.0) * (80.0 / 40.0) * (44.0 / 71.0)
+        val ZERO_POSITION: Double = 0.5
+        val POSITION_TO_ANGLE_RATIO: Double = (1.0 / 500.0) * (80.0 / 40.0) * (44.0 / 71.0)
     }
     override var angle: Double
         get() = super.angle

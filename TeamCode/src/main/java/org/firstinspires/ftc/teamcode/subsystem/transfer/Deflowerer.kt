@@ -3,20 +3,18 @@ package org.firstinspires.ftc.teamcode.subsystem.transfer
 import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.hardware.Servo
 
-@Configurable
 class Deflowerer(
     val servo: Servo
 ) {
-    @Configurable
-    enum class Mode(@JvmField var position: Double) {
+    enum class Mode(val position: Double) {
         UP(0.85),
         DOWN(1.0)
     }
 
     companion object {
-        @JvmField var WIGGLE_DISTANCE: Double = 0.001
-        @JvmField var WIGGLE_PERIOD_MS: Double = 200.0
-        @JvmField var DAMPING_BASE: Double = 20.0
+        val WIGGLE_DISTANCE: Double = 0.001
+        val WIGGLE_PERIOD_MS: Double = 200.0
+        val DAMPING_BASE: Double = 20.0
     }
 
     init {

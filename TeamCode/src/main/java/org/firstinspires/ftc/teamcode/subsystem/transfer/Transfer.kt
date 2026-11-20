@@ -9,13 +9,10 @@ class Transfer(
     val motorTop: DcMotorEx,
     val motorBottom: DcMotorEx
 ) {
-    @Configurable
-    companion object {
-        @Configurable object Powers {
-            @JvmField var ON = 1.0
-            @JvmField var OFF = 0.0
-            @JvmField var REVERSE = -1.0
-        }
+    object Powers {
+        val ON = 1.0
+        val OFF = 0.0
+        val REVERSE = -1.0
     }
     enum class Mode(val power: Double) {
         ON(Powers.ON),

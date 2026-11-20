@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.PIDCoefficients
 import kotlin.math.abs
 
-@Configurable
 class CRTurret(
     val servoLeft: CRServo,
     val servoMid: CRServo,
@@ -15,8 +14,8 @@ class CRTurret(
     val encoder: DcMotorEx,
     ) : Turret() {
     companion object {
-        @JvmField var PID_COEFFICIENTS: PIDCoefficients = PIDCoefficients()
-        @JvmField var ENCODER_TO_ANGLE_RATIO: Double = 1 / 360.0
+        val PID_COEFFICIENTS: PIDCoefficients = PIDCoefficients()
+        val ENCODER_TO_ANGLE_RATIO: Double = 1 / 360.0
     }
     val pidController: PIDController = PIDController(PID_COEFFICIENTS.p, PID_COEFFICIENTS.i, PID_COEFFICIENTS.d)
     var power = 0.0

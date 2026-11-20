@@ -4,18 +4,12 @@ import com.bylazar.configurables.annotations.Configurable
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
-@Configurable
 class Gate(
     val servo: Servo
 ) {
-    @Configurable
-    object Positions {
-        @JvmField var OPEN = 0.32
-        @JvmField var CLOSED = 0.20
-    }
     enum class Mode(val servoPosition: Double) {
-        OPEN(Positions.OPEN),
-        CLOSED(Positions.CLOSED);
+        OPEN(0.32),
+        CLOSED(0.20);
         operator fun not() = when (this) {
             OPEN -> CLOSED
             CLOSED -> OPEN
