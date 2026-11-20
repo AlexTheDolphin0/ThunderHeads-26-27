@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmode
 
+import com.bylazar.battery.PanelsBattery
+import com.bylazar.configurables.annotations.Configurable
+import com.bylazar.gamepad.PanelsGamepad
+import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.algorithm.Foresight
 import com.pedropathing.follower.Follower
 import com.pedropathing.follower.ManualDrive
@@ -8,10 +12,13 @@ import com.pedropathing.revhub.drivetrains.Mecanum
 import com.pedropathing.revhub.localizers.PinpointLocalizer
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.pedro.Constants
+import org.firstinspires.ftc.teamcode.subsystem.Alliance
 import org.firstinspires.ftc.teamcode.subsystem.Hive
 import org.firstinspires.ftc.teamcode.subsystem.Poses
 import org.firstinspires.ftc.teamcode.subsystem.shooter.Outtake
@@ -21,8 +28,15 @@ import org.firstinspires.ftc.teamcode.subsystem.transfer.Gate
 import org.firstinspires.ftc.teamcode.subsystem.transfer.Intake
 import org.firstinspires.ftc.teamcode.subsystem.transfer.Transfer
 
+@Configurable
 @TeleOp
 class TeleOp : OpMode() {
+    @Configurable
+    companion object {
+        @JvmField var outtakePidf: PIDFCoefficients = Outtake.PidfCoefficients.LEFT
+    }
+    val batteryProvider = PanelsBattery.provider
+    val panelsTelemetry = PanelsTelemetry.telemetry
     val elapsedTime: ElapsedTime = ElapsedTime()
     val follower: Follower by lazy {
         with (Constants) {
@@ -69,6 +83,7 @@ class TeleOp : OpMode() {
     }
     var latestMilli: Double = 0.0
     var targetAngle = 0.0
+    var perspective: Perspective = Perspective.RED
 
     override fun init() {
         follower
@@ -78,6 +93,14 @@ class TeleOp : OpMode() {
         gate
         intake
         deflowerer
+        telemetry.addData("Perspective", perspective.name)
+        perspective = when {
+            gamepad1.dpad_left -> Perspective.BLUE
+            gamepad1.dpad_right -> Perspective.RED
+            gamepad1.dpad_up -> Perspective.OPPOSITE
+            gamepad1.dpad_down -> Perspective.AUDIENCE
+            else -> perspective
+        }
     }
 
     override fun start() {
@@ -86,22 +109,55 @@ class TeleOp : OpMode() {
     }
 
     override fun loop() {
+        outtake.motorLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,outtakePidf)
+        outtake.motorRight.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,outtakePidf)
+        setDrivePowers()
+        tickSubsystems()
+        manualOuttake()
+        controlTransfer()
+        controlIntake()
+        controlDeflowerer()
+        controlGate()
+        targetTurret()
+        addTelemetry()
+        latestMilli = elapsedTime.milliseconds()
+    }
+    enum class Perspective {
+        RED,
+        AUDIENCE,
+        BLUE,
+        OPPOSITE
+    }
+    fun setDrivePowers() {
+        val forward = when (perspective) {
+            Perspective.RED -> -gamepad1.left_stick_y
+            Perspective.AUDIENCE -> gamepad1.left_stick_x
+            Perspective.BLUE -> gamepad1.left_stick_y
+            Perspective.OPPOSITE -> -gamepad1.left_stick_x
+        }.toDouble()
+        val lateral = when (perspective) {
+            Perspective.RED -> -gamepad1.left_stick_x
+            Perspective.AUDIENCE -> -gamepad1.left_stick_y
+            Perspective.BLUE -> gamepad1.left_stick_x
+            Perspective.OPPOSITE -> gamepad1.left_stick_y
+        }.toDouble()
         follower.manual(
             ManualDrive.fieldCentric(
-                -gamepad1.left_stick_y.toDouble(),
-                -gamepad1.left_stick_x.toDouble(),
+                forward,
+                lateral,
                 gamepad1.right_stick_x.toDouble(),
                 follower.pose().heading()
             )
         )
+    }
+    fun tickSubsystems() {
         follower.update()
         Poses.currentPose = follower.pose()
 
         deflowerer.tick(elapsedTime.milliseconds())
         intake.tick(elapsedTime.milliseconds() - latestMilli)
-
-        targetAngle -= gamepad2.right_stick_x
-
+    }
+    fun manualOuttake() {
         outtake.velocity += when {
             gamepad2.dpad_up -> 1.0
             gamepad2.dpad_down -> -1.0
@@ -109,23 +165,35 @@ class TeleOp : OpMode() {
             gamepad2.dpad_right -> 10.0
             else -> 0.0
         }
+    }
+    fun regressionOuttake(distance: Double) {
+        outtake.velocity = 5.37749 * distance + 1498.71795
+            //6.24732 * distance + 1513.73475
+    }
+    fun controlTransfer() {
         transfer.mode = when {
             gamepad1.a -> Transfer.Mode.ON
             gamepad1.b -> Transfer.Mode.REVERSE
             else -> Transfer.Mode.OFF
         }
+    }
+    fun controlIntake() {
         if (gamepad1.xWasPressed()) intake.mode = when (intake.mode) {
             Intake.Mode.UP -> Intake.Mode.DOWN
             Intake.Mode.DOWN -> Intake.Mode.UP
         }
+    }
+    fun controlDeflowerer() {
         if (gamepad1.leftBumperWasPressed()) deflowerer.mode = when (deflowerer.mode) {
             Deflowerer.Mode.UP -> Deflowerer.Mode.DOWN
             Deflowerer.Mode.DOWN -> Deflowerer.Mode.UP
         }
+    }
+    fun controlGate() {
         if (gamepad2.right_trigger_pressed) gate.open()
         else gate.close()
-        turret.angle = targetAngle - Math.toDegrees(follower.pose().heading())
-
+    }
+    fun targetTurret() {
         if (gamepad2.x || gamepad2.y || gamepad2.a || gamepad2.b) {
             val targetPosition = when {
                 gamepad2.x -> Hive.BLUE_AUDIENCE.position
@@ -137,19 +205,36 @@ class TeleOp : OpMode() {
             val distanceToTarget = targetPosition - follower.pose().toVector2D()
             telemetry.addData("From Target", distanceToTarget.magnitude())
             targetAngle = Math.toDegrees((follower.pose().toVector2D() - targetPosition).theta())
+
+            if (gamepad2.left_trigger_pressed) {
+                regressionOuttake(distanceToTarget.magnitude())
+            }
+        } else {
+            targetAngle -= gamepad2.right_stick_x
+            manualOuttake()
         }
+        turret.angle = targetAngle - Math.toDegrees(follower.pose().heading())
+    }
+    fun controlResetPosition() {
+        if (gamepad1.x && gamepad1.y && gamepad1.a && gamepad1.b ) {
 
-        telemetry.addData("Outtake Velocity", outtake.velocity)
-        telemetry.addData("Read Velocity", outtake.motorLeft.velocity)
-        telemetry.addData("Turret Angle", turret.angle)
-        telemetry.addData("Turret Target", targetAngle)
-        telemetry.addData("Gate Mode", gate.mode.name)
-        telemetry.addData("Deflowerer Mode", deflowerer.mode.name)
-        telemetry.addData("Intake Mode", intake.mode.name)
-        telemetry.addData("Transfer Mode", transfer.mode.name)
-        telemetry.addData("Position", follower.pose().x().toString() + ", " + follower.pose().y().toString())
-        telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()).toString() + " Degrees")
-
-        latestMilli = elapsedTime.milliseconds()
+        }
+    }
+    fun addTelemetry() {
+        with (panelsTelemetry) {
+            addData("Voltage", batteryProvider.batteryVoltage)
+            addData("Outtake Velocity", outtake.velocity)
+            addData("Read Velocity", outtake.motorLeft.velocity)
+            addData("Turret Angle", turret.angle)
+            addData("Turret Target", targetAngle)
+            addData("Gate Mode", gate.mode.name)
+            addData("Deflowerer Mode", deflowerer.mode.name)
+            addData("Intake Mode", intake.mode.name)
+            addData("Transfer Mode", transfer.mode.name)
+            addData("X", "${follower.pose().x()} Inches")
+            addData("Y", "${follower.pose().y()} Inches")
+            addData("Heading", "${Math.toDegrees(follower.pose().heading())} Degrees")
+            update(telemetry)
+        }
     }
 }

@@ -19,8 +19,8 @@ class Outtake(
     }
     @Configurable
     object PidfCoefficients {
-        @JvmField var LEFT: PIDFCoefficients = PIDFCoefficients(200.0, 10.0, 10.0, 10.0)
-        @JvmField var RIGHT: PIDFCoefficients = PIDFCoefficients(200.0, 10.0, 10.0, 10.0)
+        @JvmField var LEFT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
+        @JvmField var RIGHT: PIDFCoefficients = PIDFCoefficients(200.0, 1.0, 0.0, 10.0)
     }
     var velocity: Double = 0.0
         set(velocity) {

@@ -9,12 +9,12 @@ class Intake(
 ) {
     @Configurable
     companion object {
-        @JvmField var MILLIS_BEFORE_UP = 500.0
+        @JvmField var MILLIS_BEFORE_UP = 250.0
     }
     @Configurable
     object Positions {
         @JvmField var UP = 0.0
-        @JvmField var DOWN = 0.69
+        @JvmField var DOWN = 1.0
         @JvmField var FURTHER_DOWN = 1.0
     }
     enum class Mode {

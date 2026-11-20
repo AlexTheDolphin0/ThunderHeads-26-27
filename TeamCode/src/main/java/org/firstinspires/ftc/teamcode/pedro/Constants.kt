@@ -31,8 +31,8 @@ object Constants {
         config.apply {
             name.set("pinpoint")
             podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-            xPodOffset.set(-6.223646749661664)
-            yPodOffset.set(-2.8399841428741697)
+            xPodOffset.set(-7.0)
+            yPodOffset.set(-2.84375)
             xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             globalDistanceUnit.set(DistanceUnit.INCH)
