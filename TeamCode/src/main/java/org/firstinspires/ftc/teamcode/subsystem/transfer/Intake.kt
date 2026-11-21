@@ -11,7 +11,7 @@ class Intake(
     }
     object Positions {
         val UP = 0.0
-        val DOWN = 1.0
+        val DOWN = 0.45
         val FURTHER_DOWN = 1.0
     }
     enum class Mode {

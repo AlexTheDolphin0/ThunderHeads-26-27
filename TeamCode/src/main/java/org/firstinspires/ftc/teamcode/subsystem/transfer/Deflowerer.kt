@@ -7,8 +7,8 @@ class Deflowerer(
     val servo: Servo
 ) {
     enum class Mode(val position: Double) {
-        UP(0.85),
-        DOWN(1.0)
+        UP(0.01),
+        DOWN(0.16)
     }
 
     companion object {

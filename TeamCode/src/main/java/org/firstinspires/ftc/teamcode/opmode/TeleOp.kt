@@ -7,6 +7,7 @@ import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.algorithm.Foresight
 import com.pedropathing.follower.Follower
 import com.pedropathing.follower.ManualDrive
+import com.pedropathing.math.Pose
 import com.pedropathing.math.Vector2D
 import com.pedropathing.revhub.drivetrains.Mecanum
 import com.pedropathing.revhub.localizers.PinpointLocalizer
@@ -93,6 +94,9 @@ class TeleOp : OpMode() {
         gate
         intake
         deflowerer
+    }
+
+    override fun init_loop() {
         telemetry.addData("Perspective", perspective.name)
         perspective = when {
             gamepad1.dpad_left -> Perspective.BLUE
@@ -166,10 +170,6 @@ class TeleOp : OpMode() {
             else -> 0.0
         }
     }
-    fun regressionOuttake(distance: Double) {
-        outtake.velocity = 5.37749 * distance + 1498.71795
-            //6.24732 * distance + 1513.73475
-    }
     fun controlTransfer() {
         transfer.mode = when {
             gamepad1.a -> Transfer.Mode.ON
@@ -203,7 +203,7 @@ class TeleOp : OpMode() {
                 else -> Vector2D.zero()
             }
             val distanceToTarget = targetPosition - follower.pose().toVector2D()
-            telemetry.addData("From Target", distanceToTarget.magnitude())
+            panelsTelemetry.addData("From Target", distanceToTarget.magnitude())
             targetAngle = Math.toDegrees((follower.pose().toVector2D() - targetPosition).theta())
 
             if (gamepad2.left_trigger_pressed) {
@@ -215,9 +215,33 @@ class TeleOp : OpMode() {
         }
         turret.angle = targetAngle - Math.toDegrees(follower.pose().heading())
     }
+    fun regressionOuttake(distance: Double) {
+        outtake.velocity = 5.37749 * distance + 1498.71795
+        //6.24732 * distance + 1513.73475
+    }
     fun controlResetPosition() {
-        if (gamepad1.x && gamepad1.y && gamepad1.a && gamepad1.b ) {
+        if (gamepad1.start && gamepad2.start) {
+            val vec = follower.pose().toVector2D()
+            val distanceToLeft = vec.x() - 9.0
+            val distanceToRight = 135.0 - vec.x()
+            val distanceToBottom = vec.y() - 9.0
+            val distanceToTop = 135.0 - vec.y()
+            val roundedVec = Vector2D.cartesian(
+                if (distanceToLeft < distanceToRight) 9.0 else 135.0,
+                if (distanceToBottom < distanceToTop) 9.0 else 135.0
+            )
 
+            val roundedHeading = when (Math.toRadians(follower.pose().heading())) {
+                in -180.0..<-135.0 -> 180.0
+                in -135.0..<-45.0 -> -90.0
+                in -45.0..<45.0 -> 0.0
+                in 45.0..<135.0 -> 90.0
+                in 135.0..180.0 -> 180.0
+                else -> 0.0
+            }
+            follower.setPose(
+                Pose(roundedVec.x(), roundedVec.y(), roundedHeading)
+            )
         }
     }
     fun addTelemetry() {

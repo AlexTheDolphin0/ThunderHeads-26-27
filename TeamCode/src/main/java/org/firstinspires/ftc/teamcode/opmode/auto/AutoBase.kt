@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.auto
 
+import com.bylazar.telemetry.PanelsTelemetry
 import com.pedropathing.algorithm.Foresight
 import com.pedropathing.follower.Follower
 import com.pedropathing.math.Pose
@@ -26,6 +27,7 @@ abstract class AutoBase : OpMode() {
     abstract val alliance: Alliance
     abstract val startPose: Pose
     abstract val eventList: List<Event>
+    val panelsTelemetry = PanelsTelemetry.telemetry
     val follower: Follower by lazy {
         with (Constants) {
             Follower(
@@ -100,12 +102,17 @@ abstract class AutoBase : OpMode() {
         intake.tick(deltaMillis)
 
         turret.angle = Math.toDegrees((follower.pose().toVector2D() - Hive[Alliance.alliance, Alliance.alliance.orientation].position).theta()) - Math.toDegrees(follower.pose().heading())
-        telemetry.addData("Current Event", eventLoop.currentEvent?.name)
-        telemetry.addData("Next Event", eventLoop.queue.firstOrNull()?.name)
-        telemetry.addData("Distance To Endpoint", "${follower.distanceToEndpoint()} Inches")
-        telemetry.addData("Event Time", "${eventLoop.millisSinceEventStart} Milliseconds")
-        telemetry.addData("Measured Time", "${elapsedTime.milliseconds()} Milliseconds")
-        telemetry.addData("Time", "$currentMillis Milliseconds")
+
+        with (panelsTelemetry) {
+            addData("Current Event", eventLoop.currentEvent?.name ?: "None")
+            addData("Next Event", eventLoop.queue.firstOrNull()?.name ?: "None")
+            addData("Distance To Endpoint", "${follower.distanceToEndpoint()} Inches")
+            addData("Event Duration", "${eventLoop.currentEvent?.durationMillis ?: 0.0} Milliseconds")
+            addData("Event Duration Remaining", "${eventLoop.currentEvent?.durationMillis?.minus(eventLoop.millisSinceEventStart) ?: 0.0} Milliseconds")
+            addData("Measured Time", "${elapsedTime.milliseconds()} Milliseconds")
+            addData("Time", "$currentMillis Milliseconds")
+            panelsTelemetry.update()
+        }
 
         latestMillis = currentMillis
     }
@@ -113,7 +120,7 @@ abstract class AutoBase : OpMode() {
         "Spin Up",
         3000.0,
         {
-            outtake.velocity = 1300.0
+            outtake.velocity = 1780.0
         }
     )
     val shoot: Event = Event(
