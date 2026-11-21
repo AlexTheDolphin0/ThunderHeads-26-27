@@ -240,14 +240,14 @@ class TeleOp : OpMode() {
                 if (distanceToBottom < distanceToTop) 9.0 else 135.0
             )
 
-            val roundedHeading = when (Math.toRadians(follower.pose().heading())) {
+            val roundedHeading = Math.toRadians(when (Math.toDegrees(follower.pose().heading())) {
                 in -180.0..<-135.0 -> 180.0
                 in -135.0..<-45.0 -> -90.0
                 in -45.0..<45.0 -> 0.0
                 in 45.0..<135.0 -> 90.0
                 in 135.0..180.0 -> 180.0
                 else -> 0.0
-            }
+            })
             follower.setPose(
                 Pose(roundedVec.x(), roundedVec.y(), roundedHeading)
             )
