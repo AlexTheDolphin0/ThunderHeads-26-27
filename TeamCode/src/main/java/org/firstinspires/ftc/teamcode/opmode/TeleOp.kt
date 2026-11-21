@@ -15,12 +15,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.pedro.Constants
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver
 import org.firstinspires.ftc.teamcode.subsystem.Alliance
 import org.firstinspires.ftc.teamcode.subsystem.Hive
+import org.firstinspires.ftc.teamcode.subsystem.LEDs
 import org.firstinspires.ftc.teamcode.subsystem.Poses
 import org.firstinspires.ftc.teamcode.subsystem.shooter.Outtake
 import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.PTurret
@@ -82,18 +85,24 @@ class TeleOp : OpMode() {
             hardwareMap["gate"] as Servo,
         )
     }
+    val leds: LEDs by lazy {
+        LEDs(
+            hardwareMap["ledLeft"] as GoBildaPrismDriver,
+            hardwareMap["ledRight"] as GoBildaPrismDriver,
+        )
+    }
     var latestMilli: Double = 0.0
     var targetAngle = 0.0
     var perspective: Perspective = Perspective.RED
 
     override fun init() {
+        leds.matchAlliance()
         follower
         outtake
         turret
         transfer
         gate
-        intake
-        deflowerer
+        intake.up()
     }
 
     override fun init_loop() {
@@ -110,6 +119,7 @@ class TeleOp : OpMode() {
     override fun start() {
         elapsedTime.reset()
         latestMilli = 0.0
+        deflowerer.up()
     }
 
     override fun loop() {
@@ -124,6 +134,7 @@ class TeleOp : OpMode() {
         controlGate()
         targetTurret()
         addTelemetry()
+        controlResetPosition()
         latestMilli = elapsedTime.milliseconds()
     }
     enum class Perspective {
@@ -159,7 +170,7 @@ class TeleOp : OpMode() {
         Poses.currentPose = follower.pose()
 
         deflowerer.tick(elapsedTime.milliseconds())
-        intake.tick(elapsedTime.milliseconds() - latestMilli)
+        intake.tick(elapsedTime.milliseconds() - latestMilli, elapsedTime.milliseconds())
     }
     fun manualOuttake() {
         outtake.velocity += when {
@@ -181,12 +192,13 @@ class TeleOp : OpMode() {
         if (gamepad1.xWasPressed()) intake.mode = when (intake.mode) {
             Intake.Mode.UP -> Intake.Mode.DOWN
             Intake.Mode.DOWN -> Intake.Mode.UP
+            Intake.Mode.DESCORER -> Intake.Mode.DESCORER
         }
     }
     fun controlDeflowerer() {
         if (gamepad1.leftBumperWasPressed()) deflowerer.mode = when (deflowerer.mode) {
-            Deflowerer.Mode.UP -> Deflowerer.Mode.DOWN
-            Deflowerer.Mode.DOWN -> Deflowerer.Mode.UP
+            Deflowerer.Mode.UP -> Deflowerer.Mode.DOWN.also { intake.mode = Intake.Mode.DESCORER }
+            Deflowerer.Mode.DOWN -> Deflowerer.Mode.UP.also { intake.mode = Intake.Mode.DOWN }
         }
     }
     fun controlGate() {
@@ -195,29 +207,26 @@ class TeleOp : OpMode() {
     }
     fun targetTurret() {
         if (gamepad2.x || gamepad2.y || gamepad2.a || gamepad2.b) {
-            val targetPosition = when {
-                gamepad2.x -> Hive.BLUE_AUDIENCE.position
-                gamepad2.y -> Hive.RED_AUDIENCE.position
-                gamepad2.a -> Hive.BLUE_OPPOSITE.position
-                gamepad2.b -> Hive.RED_OPPOSITE.position
-                else -> Vector2D.zero()
+            val targetHive = when {
+                gamepad2.x && Alliance.alliance == Alliance.BLUE -> Hive.BLUE_AUDIENCE
+                gamepad2.y && Alliance.alliance == Alliance.RED -> Hive.RED_AUDIENCE
+                gamepad2.a && Alliance.alliance == Alliance.BLUE -> Hive.BLUE_OPPOSITE
+                gamepad2.b && Alliance.alliance == Alliance.RED -> Hive.RED_OPPOSITE
+                else -> Hive.RED_AUDIENCE
             }
+            val targetPosition = targetHive.position
             val distanceToTarget = targetPosition - follower.pose().toVector2D()
             panelsTelemetry.addData("From Target", distanceToTarget.magnitude())
             targetAngle = Math.toDegrees((follower.pose().toVector2D() - targetPosition).theta())
 
             if (gamepad2.left_trigger_pressed) {
-                regressionOuttake(distanceToTarget.magnitude())
+                outtake.regression(distanceToTarget.magnitude())
             }
         } else {
             targetAngle -= gamepad2.right_stick_x
             manualOuttake()
         }
         turret.angle = targetAngle - Math.toDegrees(follower.pose().heading())
-    }
-    fun regressionOuttake(distance: Double) {
-        outtake.velocity = 5.37749 * distance + 1498.71795
-        //6.24732 * distance + 1513.73475
     }
     fun controlResetPosition() {
         if (gamepad1.start && gamepad2.start) {
@@ -242,6 +251,8 @@ class TeleOp : OpMode() {
             follower.setPose(
                 Pose(roundedVec.x(), roundedVec.y(), roundedHeading)
             )
+            gamepad1.runRumbleEffect(Gamepad.RumbleEffect.Builder().addStep(1.0, 1.0, 100).build())
+            gamepad2.runRumbleEffect(Gamepad.RumbleEffect.Builder().addStep(1.0, 1.0, 100).build())
         }
     }
     fun addTelemetry() {

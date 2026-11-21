@@ -10,45 +10,23 @@ import org.firstinspires.ftc.teamcode.subsystem.Event
 
 @Autonomous
 class RedNear : AutoBase() {
-    @Configurable
-    companion object {
-        @JvmField var GARDEN_PICKUP_POSE = Pose(15.0, 9.0, Math.toRadians(180.0))
-        @JvmField var MAX_PICKUP_SPEED = 0.8
-    }
     override val alliance = Alliance.RED
     override val startPose: Pose = Pose(33.0, 9.0, Math.toRadians(180.0))
-    val gardenPickupPose: Pose = GARDEN_PICKUP_POSE
+    val gardenPickupPose: Pose = Pose(15.0, 9.0, Math.toRadians(180.0))
+    val parkPose = Pose(11.0, 93.0, Math.toRadians(-90.0))
+    val maxPickupSpeed = 0.8
     override val eventList: List<Event> = listOf(
         spinUp,
         shoot,
         Event(
-            "Garden Pickup",
-            4000.0,
-            {
-                intake.down()
-                transfer.on()
-                follower.follow(
-                    Paths.line(startPose, gardenPickupPose).linear(startPose, gardenPickupPose).with(
-                        Constants.foresightConfig.maxPathSpeed.at(MAX_PICKUP_SPEED)
-                    )
-                )
-            }
-        ),
-        Event(
-            "Return To Start",
-            4000.0,
+            "Park",
+            8000.0,
             start = {
                 follower.follow(
-                    Paths.line(gardenPickupPose, startPose).linear(startPose, gardenPickupPose)
+                    Paths.line(startPose, parkPose).linear(startPose, parkPose)
                 )
-                transfer.on()
-            },
-            end = {
-                intake.up()
-                transfer.off()
             },
         ),
-        shoot,
-        spinDown
+        spinDown,
     )
 }

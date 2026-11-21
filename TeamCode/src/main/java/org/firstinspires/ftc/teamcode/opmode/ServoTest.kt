@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
 
-@TeleOp
+@TeleOp(name = "Servo Test", group = "Tests")
 class ServoTest : OpMode() {
     val servos: List<Servo> by lazy {
         hardwareMap.getAll(Servo::class.java)

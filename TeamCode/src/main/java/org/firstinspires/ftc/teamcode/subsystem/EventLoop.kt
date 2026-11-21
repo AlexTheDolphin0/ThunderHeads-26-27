@@ -32,7 +32,7 @@ class EventLoop {
 
 data class Event(
     val name: String,
-    val durationMillis: Double,
+    val durationMillis: Double = 0.0,
     val start: () -> Unit = {},
     val loop: (Double) -> Unit = {},
     val end: () -> Unit = {},

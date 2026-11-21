@@ -8,11 +8,11 @@ class Deflowerer(
 ) {
     enum class Mode(val position: Double) {
         UP(0.01),
-        DOWN(0.16)
+        DOWN(0.155)
     }
 
     companion object {
-        val WIGGLE_DISTANCE: Double = 0.001
+        val WIGGLE_DISTANCE: Double = 0.002
         val WIGGLE_PERIOD_MS: Double = 200.0
         val DAMPING_BASE: Double = 20.0
     }

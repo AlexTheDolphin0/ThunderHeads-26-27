@@ -47,4 +47,8 @@ class Outtake(
     fun off() {
         velocity = 0.0
     }
+    fun regression(distance: Double) {
+        velocity = 5.37749 * distance + 1458.71795
+        //6.24732 * distance + 1513.73475
+    }
 }

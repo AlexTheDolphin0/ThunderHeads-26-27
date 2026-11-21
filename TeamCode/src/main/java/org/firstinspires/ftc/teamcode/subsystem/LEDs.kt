@@ -22,12 +22,22 @@ class LEDs(
         prismAnimation = PrismAnimations.Solid(Color.TRANSPARENT)
     }
     fun matchAlliance() {
-        prismAnimation = PrismAnimations.SineWave(
+        prismAnimation = PrismAnimations.Snakes(
             when (Alliance.alliance) {
                 Alliance.RED -> Color.RED
                 Alliance.BLUE -> Color.BLUE
             },
             Color.TRANSPARENT
         )
+    }
+    fun warningLights() {
+        prismAnimation = PrismAnimations.Snakes(
+            Color.RED,
+            Color.BLUE
+        )
+    }
+    fun off() {
+        leftDriver.clearAllAnimations()
+        rightDriver.clearAllAnimations()
     }
 }

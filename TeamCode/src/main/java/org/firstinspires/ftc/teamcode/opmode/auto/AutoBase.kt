@@ -11,10 +11,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.pedro.Constants
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver
 import org.firstinspires.ftc.teamcode.subsystem.Alliance
 import org.firstinspires.ftc.teamcode.subsystem.Event
 import org.firstinspires.ftc.teamcode.subsystem.EventLoop
 import org.firstinspires.ftc.teamcode.subsystem.Hive
+import org.firstinspires.ftc.teamcode.subsystem.LEDs
 import org.firstinspires.ftc.teamcode.subsystem.Poses
 import org.firstinspires.ftc.teamcode.subsystem.shooter.Outtake
 import org.firstinspires.ftc.teamcode.subsystem.shooter.turret.PTurret
@@ -56,11 +58,6 @@ abstract class AutoBase : OpMode() {
             hardwareMap["turretRight"] as Servo
         )
     }
-    val deflowerer: Deflowerer by lazy {
-        Deflowerer(
-            servo = hardwareMap["deflowerer"] as Servo,
-        )
-    }
     val intake: Intake by lazy {
         Intake(
             servo = hardwareMap["intake"] as Servo,
@@ -71,6 +68,12 @@ abstract class AutoBase : OpMode() {
             hardwareMap["gate"] as Servo,
         )
     }
+    val leds: LEDs by lazy {
+        LEDs(
+            hardwareMap["ledLeft"] as GoBildaPrismDriver,
+            hardwareMap["ledRight"] as GoBildaPrismDriver,
+        )
+    }
     val elapsedTime: ElapsedTime = ElapsedTime()
     val eventLoop: EventLoop = EventLoop()
     var latestMillis: Double = 0.0
@@ -79,13 +82,13 @@ abstract class AutoBase : OpMode() {
         outtake
         transfer.off()
         turret
-        deflowerer.up()
-        intake.up()
+        intake
         gate.close()
         follower.setPose(startPose)
         follower.holdEnd
         eventLoop.addEvents(eventList)
         Alliance.alliance = alliance
+        leds.matchAlliance()
     }
     override fun start() {
         elapsedTime.reset()
@@ -98,8 +101,7 @@ abstract class AutoBase : OpMode() {
         follower.update()
         Poses.currentPose = follower.pose()
 
-        deflowerer.tick(currentMillis)
-        intake.tick(deltaMillis)
+        intake.tick(deltaMillis, currentMillis)
 
         turret.angle = Math.toDegrees((follower.pose().toVector2D() - Hive[Alliance.alliance, Alliance.alliance.orientation].position).theta()) - Math.toDegrees(follower.pose().heading())
 
@@ -111,7 +113,7 @@ abstract class AutoBase : OpMode() {
             addData("Event Duration Remaining", "${eventLoop.currentEvent?.durationMillis?.minus(eventLoop.millisSinceEventStart) ?: 0.0} Milliseconds")
             addData("Measured Time", "${elapsedTime.milliseconds()} Milliseconds")
             addData("Time", "$currentMillis Milliseconds")
-            panelsTelemetry.update()
+            panelsTelemetry.update(telemetry)
         }
 
         latestMillis = currentMillis
@@ -141,5 +143,9 @@ abstract class AutoBase : OpMode() {
         {
             outtake.velocity = 0.0
         }
+    )
+    fun sleep(durationMillis: Double): Event = Event(
+        "Sleep ${durationMillis}ms",
+        durationMillis,
     )
 }
