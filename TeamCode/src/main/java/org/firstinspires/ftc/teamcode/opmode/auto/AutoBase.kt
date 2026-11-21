@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystem.transfer.Transfer
 
 abstract class AutoBase : OpMode() {
     abstract val alliance: Alliance
+    abstract val targetHive: Hive
     abstract val startPose: Pose
     abstract val eventList: List<Event>
     val panelsTelemetry = PanelsTelemetry.telemetry
@@ -58,11 +59,6 @@ abstract class AutoBase : OpMode() {
             hardwareMap["turretRight"] as Servo
         )
     }
-    val intake: Intake by lazy {
-        Intake(
-            servo = hardwareMap["intake"] as Servo,
-        )
-    }
     val gate: Gate by lazy {
         Gate(
             hardwareMap["gate"] as Servo,
@@ -82,7 +78,6 @@ abstract class AutoBase : OpMode() {
         outtake
         transfer.off()
         turret
-        intake
         gate.close()
         follower.setPose(startPose)
         follower.holdEnd
@@ -101,9 +96,7 @@ abstract class AutoBase : OpMode() {
         follower.update()
         Poses.currentPose = follower.pose()
 
-        intake.tick(deltaMillis, currentMillis)
-
-        turret.angle = Math.toDegrees((follower.pose().toVector2D() - Hive[Alliance.alliance, Alliance.alliance.orientation].position).theta()) - Math.toDegrees(follower.pose().heading())
+        turret.angle = Math.toDegrees((follower.pose().toVector2D() - targetHive.position).theta()) - Math.toDegrees(follower.pose().heading())
 
         with (panelsTelemetry) {
             addData("Current Event", eventLoop.currentEvent?.name ?: "None")
@@ -118,11 +111,11 @@ abstract class AutoBase : OpMode() {
 
         latestMillis = currentMillis
     }
-    val spinUp: Event = Event(
+    fun spinUp(velocity: Double): Event = Event(
         "Spin Up",
         3000.0,
         {
-            outtake.velocity = 1780.0
+            outtake.velocity = velocity
         }
     )
     val shoot: Event = Event(
