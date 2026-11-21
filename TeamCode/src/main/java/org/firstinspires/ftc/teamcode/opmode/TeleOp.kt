@@ -119,7 +119,7 @@ class TeleOp : OpMode() {
     override fun start() {
         elapsedTime.reset()
         latestMilli = 0.0
-        deflowerer.up()
+        //deflowerer.up()
     }
 
     override fun loop() {
@@ -129,8 +129,8 @@ class TeleOp : OpMode() {
         tickSubsystems()
         manualOuttake()
         controlTransfer()
-        controlIntake()
-        controlDeflowerer()
+        //controlIntake()
+        //controlDeflowerer()
         controlGate()
         targetTurret()
         addTelemetry()
@@ -169,8 +169,8 @@ class TeleOp : OpMode() {
         follower.update()
         Poses.currentPose = follower.pose()
 
-        deflowerer.tick(elapsedTime.milliseconds())
-        intake.tick(elapsedTime.milliseconds() - latestMilli, elapsedTime.milliseconds())
+        //deflowerer.tick(elapsedTime.milliseconds())
+        //intake.tick(elapsedTime.milliseconds() - latestMilli, elapsedTime.milliseconds())
     }
     fun manualOuttake() {
         outtake.velocity += when {
@@ -196,10 +196,10 @@ class TeleOp : OpMode() {
         }
     }
     fun controlDeflowerer() {
-        if (gamepad1.leftBumperWasPressed()) deflowerer.mode = when (deflowerer.mode) {
+        /*if (gamepad1.leftBumperWasPressed()) deflowerer.mode = when (deflowerer.mode) {
             Deflowerer.Mode.UP -> Deflowerer.Mode.DOWN.also { intake.mode = Intake.Mode.DESCORER }
             Deflowerer.Mode.DOWN -> Deflowerer.Mode.UP.also { intake.mode = Intake.Mode.DOWN }
-        }
+        }*/
     }
     fun controlGate() {
         if (gamepad2.right_trigger_pressed) gate.open()
@@ -263,8 +263,8 @@ class TeleOp : OpMode() {
             addData("Turret Angle", turret.angle)
             addData("Turret Target", targetAngle)
             addData("Gate Mode", gate.mode.name)
-            addData("Deflowerer Mode", deflowerer.mode.name)
-            addData("Intake Mode", intake.mode.name)
+            //addData("Deflowerer Mode", deflowerer.mode.name)
+            //addData("Intake Mode", intake.mode.name)
             addData("Transfer Mode", transfer.mode.name)
             addData("X", "${follower.pose().x()} Inches")
             addData("Y", "${follower.pose().y()} Inches")

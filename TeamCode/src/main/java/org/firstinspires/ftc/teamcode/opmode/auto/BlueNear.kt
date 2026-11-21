@@ -16,6 +16,7 @@ class BlueNear : AutoBase() {
     override val eventList: List<Event> = listOf(
         spinUp(1800.0),
         shoot,
+        spinDown,
         Event(
             "Park",
             8000.0,
@@ -25,6 +26,5 @@ class BlueNear : AutoBase() {
                 )
             },
         ),
-        spinDown,
     )
 }

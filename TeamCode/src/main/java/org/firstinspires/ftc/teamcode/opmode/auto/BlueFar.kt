@@ -15,8 +15,9 @@ class BlueFar : AutoBase() {
     val parkPose = Pose(133.0, 26.0, Math.toRadians(180.0))
     override val eventList: List<Event> = listOf(
         sleep(8000.0),
-        spinUp(1760.0),
+        spinUp(1780.0),
         shoot,
+        spinDown,
         Event(
             "Park",
             8000.0,
@@ -26,6 +27,5 @@ class BlueFar : AutoBase() {
                 )
             },
         ),
-        spinDown,
     )
 }

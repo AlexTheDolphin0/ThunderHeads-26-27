@@ -16,8 +16,9 @@ class RedFar : AutoBase() {
     val parkPose = Pose(11.0, 118.0, Math.toRadians(0.0))
     override val eventList: List<Event> = listOf(
         sleep(8000.0),
-        spinUp(1760.0),
+        spinUp(1780.0),
         shoot,
+        spinDown,
         Event(
             "Park",
             8000.0,
@@ -26,7 +27,6 @@ class RedFar : AutoBase() {
                     Paths.line(startPose, parkPose).linear(startPose, parkPose)
                 )
             },
-        ),
-        spinDown
+        )
     )
 }
